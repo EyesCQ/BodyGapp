@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101722">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Antrenman Takip</title>
+<style>
+:root{--bg:#101722;--card:#182131;--in:#0d131c;--line:#26334a;--tx:#eef2f8;--mu:#8393ad;--ac:#5ad1e6;--warn:#ffb454;--red:#ff6b6b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg);color-scheme:dark}
+body{margin:0 auto;max-width:520px;color:var(--tx);font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 110px)}
+h1{font-size:26px;margin:2px 0 0;letter-spacing:-.5px}
+.sub{color:var(--mu);font-size:14px}
+button{font:inherit;color:inherit;cursor:pointer}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:3px;margin:14px 0 10px}
+.seg button{flex:1;border:0;background:none;padding:9px;border-radius:9px;font-weight:600;color:var(--mu)}
+.seg .on{background:var(--ac);color:#06222a}
+.tabs{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:10px}
+.tabs button{padding:9px 0 5px;border-radius:11px;border:1px solid var(--line);background:var(--card);font-weight:600;font-size:13px}
+.tabs small{display:block;font-size:12px;height:16px;color:var(--mu)}
+.tabs .on{background:var(--ac);border-color:var(--ac);color:#06222a}.tabs .on small{color:#06222a}
+.tabs .ok small{color:var(--ac)}.tabs .no small{color:var(--red)}
+.tabs .on.ok small,.tabs .on.no small{color:#06222a}
+.tin{width:100%;background:var(--card);border:1px solid var(--line);color:var(--tx);border-radius:12px;padding:12px;font-size:17px;font-weight:600;outline:0}
+.tin:focus,input[type=text]:focus{border-color:var(--ac)}
+.stb{display:flex;gap:8px;margin:10px 0}
+.stb button{flex:1;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-weight:600}
+.stb .on{background:var(--ac);border-color:var(--ac);color:#06222a}
+.stb .off{background:var(--red);border-color:var(--red);color:#2b0606}
+.sum{display:flex;justify-content:space-between;color:var(--mu);font-size:14px;margin:12px 2px}
+.sum b{color:var(--tx)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.ch{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ch b{font-size:17px}
+.x,.rm{background:none;border:0;color:var(--mu);font-size:18px;padding:6px 8px;border-radius:8px}
+.x:active,.rm:active{color:var(--red)}
+.last{color:var(--ac);font-size:13px;margin:2px 0 6px}
+.row,.cap{display:grid;grid-template-columns:22px 1fr 1fr 34px;gap:8px;align-items:center}
+.row{margin-top:8px}.row span{color:var(--mu);font-size:14px;text-align:center}
+.cap{color:var(--mu);font-size:12px;text-align:center}
+input[type=text]{width:100%;background:var(--in);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:10px 6px;font-size:16px;text-align:center;outline:0}
+input::placeholder{color:#4a5a75}
+.ft{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:13px;color:var(--mu);flex-wrap:wrap}
+.ft b{color:var(--tx);font-size:15px}
+.ft .as{margin-left:auto;background:none;border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--ac);font-weight:600}
+.add{display:flex;gap:8px;margin:4px 0 22px}
+.add input{text-align:left;padding:12px}
+.add button{background:var(--ac);color:#06222a;border:0;border-radius:10px;padding:12px 16px;font-weight:700}
+.hr{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px}
+.hr .d{color:var(--mu);font-size:13px;font-weight:400;margin-left:6px}
+.ht{color:var(--mu);font-size:14px;margin-top:2px}
+.bd{font-size:13px;font-weight:700;padding:5px 10px;border-radius:20px;white-space:nowrap;border:1px solid currentColor}
+.bd.done{color:var(--ac)}.bd.skip{color:var(--red)}.bd.miss{color:var(--mu)}.bd.wait{color:var(--warn)}
+h2{font-size:15px;color:var(--mu);margin:6px 2px;font-weight:600}
+.bk{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.bk button,.bk label{background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:10px;padding:12px;font-weight:600;font-size:15px;text-align:center}
+.bk label{grid-column:1/-1;color:var(--ac)}
+.tbar{position:fixed;left:0;right:0;bottom:0;background:rgba(16,23,34,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 10px)}
+.ti{max-width:520px;margin:0 auto;display:flex;gap:8px;align-items:center}
+#tm{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;min-width:84px}
+.ti button{flex:1;padding:13px 0;border-radius:12px;border:1px solid var(--line);background:var(--card);font-weight:700}
+.ti button.on{background:var(--ac);color:#06222a;border-color:var(--ac)}
+.ti #stop{flex:0 0 46px;color:var(--mu)}
+.tbar.done{background:var(--warn)}.tbar.done #tm{color:#2a1a00}
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 10px);transform:translate(-50%,-80px);background:var(--tx);color:#101722;padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;transition:transform .25s;z-index:9}
+#toast.show{transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<h1 id="title"></h1>
+<div class="sub" id="date"></div>
+<div class="seg"><button data-v="w" class="on">Antrenman</button><button data-v="h">Geçmiş</button></div>
+
+<div id="wv">
+  <div class="tabs" id="tabs"></div>
+  <input type="text" class="tin" id="wt" placeholder="Antrenman adı (boşsa dinlenme günü)" autocomplete="off">
+  <div id="st"></div>
+  <div class="sum"><span>Bu günün toplam hacmi</span><b id="total">0 kg</b></div>
+  <div id="list"></div>
+  <form class="add" id="addf">
+    <input type="text" id="newEx" placeholder="Bu güne yeni hareket ekle" autocomplete="off" enterkeyhint="done">
+    <button type="submit">Ekle</button>
+  </form>
+</div>
+
+<div id="hv" hidden>
+  <div class="sum"><span id="hs"></span></div>
+  <div id="hl"></div>
+</div>
+
+<h2>Yedekleme</h2>
+<div class="bk">
+  <button id="ej">JSON indir</button><button id="ec">CSV indir</button>
+  <label>JSON yedeği geri yükle<input type="file" id="imp" accept=".json,application/json" hidden></label>
+</div>
+
+<div class="tbar" id="tbar"><div class="ti">
+  <span id="tm">00:00</span>
+  <button data-s="60">60</button><button data-s="90">90</button><button data-s="120">120</button>
+  <button id="stop" aria-label="Sayacı durdur">✕</button>
+</div></div>
+<div id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const KEY='spor-takip-v1';
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DN=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
+const DF=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+const ORDER=[1,2,3,4,5,6,0];
+const DEF={
+ 1:['Göğüs / Ön Kol',['Bench Press','Eğimli Dumbbell Press','Kablo Fly','Barbell Curl','Çekiç Curl']],
+ 3:['Sırt / Arka Kol',['Lat Pulldown','Barbell Row','Oturarak Kablo Row','Triceps Pushdown','Skull Crusher']],
+ 5:['Bacak / Omuz',['Squat','Leg Press','Romanian Deadlift','Omuz Press','Yan Kaldırış']]};
+const fmtD=d=>d.toLocaleDateString('sv-SE');
+const today=()=>fmtD(new Date());
+
+function fresh(){const days={},names={};
+  for(let d=0;d<7;d++)days[d]={title:'',ids:[]};
+  for(const d in DEF){days[d].title=DEF[d][0];days[d].ids=DEF[d][1].map(n=>{const id=uid();names[id]=n;return id})}
+  return{days,names,logs:{},done:{},since:today()}}
+/* Eski (3 günlük) veya yeni yedek biçimini yeni biçime çevirir */
+function mig(d){
+  if(!d||!d.names||!d.logs)return null;
+  if(!d.days){if(!d.prog)return null;
+    const T={1:'Göğüs / Ön Kol',3:'Sırt / Arka Kol',5:'Bacak / Omuz'};d.days={};
+    for(let i=0;i<7;i++)d.days[i]={title:T[i]||'',ids:d.prog[i]||[]};delete d.prog}
+  for(let i=0;i<7;i++){d.days[i]=d.days[i]||{title:'',ids:[]};if(!Array.isArray(d.days[i].ids))return null;d.days[i].title=d.days[i].title||''}
+  d.done=d.done||{};d.since=d.since||Object.keys(d.logs).sort()[0]||today();return d}
+let S;try{S=mig(JSON.parse(localStorage.getItem(KEY)))}catch(e){}
+if(!S)S=fresh();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Kaydedilemedi, tarayıcı hafızası dolu veya kapalı')}};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
+
+/* Seçili günün bu haftaki tarihi: eksik günü sonradan da işleyebilirsin */
+function weekDate(dow){const n=new Date();
+  return fmtD(new Date(n.getFullYear(),n.getMonth(),n.getDate()-((n.getDay()+6)%7)+ORDER.indexOf(dow)))}
+let day=new Date().getDay(),view='w';
+const vd=()=>weekDate(day);
+
+const valid=s=>+s.k>0&&+s.r>0;
+const vol=a=>a.filter(valid).reduce((t,s)=>t+s.k*s.r,0);
+const rm=a=>a.filter(valid).reduce((m,s)=>Math.max(m,+s.r===1?+s.k:s.k*(1+s.r/30)),0);
+const f1=n=>(Math.round(n*10)/10).toLocaleString('tr-TR');
+function sets(id){const t=vd(),L=S.logs[t]||(S.logs[t]={});return L[id]||(L[id]=[{k:'',r:''},{k:'',r:''},{k:'',r:''}])}
+function last(id){const t=vd();
+  const ds=Object.keys(S.logs).filter(d=>d<t&&S.logs[d][id]&&S.logs[d][id].some(valid)).sort();
+  if(!ds.length)return null;const d=ds[ds.length-1],v=S.logs[d][id].filter(valid);
+  return{d,n:v.length,b:v.reduce((a,s)=>+s.k>=+a.k?s:a)}}
+
+function rowH(s,i,L){return `<div class="row"><span>${i+1}</span>
+ <input type="text" inputmode="decimal" data-i="${i}" data-f="k" value="${esc(s.k)}" placeholder="${L?L.b.k:'0'}" aria-label="Ağırlık kg">
+ <input type="text" inputmode="numeric" data-i="${i}" data-f="r" value="${esc(s.r)}" placeholder="${L?L.b.r:'0'}" aria-label="Tekrar">
+ <button class="rm" data-a="rs" data-i="${i}" aria-label="Seti sil">−</button></div>`}
+
+function render(){
+  document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.v===view));
+  $('#wv').hidden=view!=='w';$('#hv').hidden=view!=='h';
+  if(view==='h'){$('#title').textContent='Geçmiş';$('#date').textContent='Hangi gün hangi antrenman yapıldı';return hist()}
+  const D=S.days[day],dt=vd(),x=S.done[dt];
+  $('#title').textContent=DF[day];
+  $('#date').textContent=new Date(dt+'T12:00').toLocaleDateString('tr-TR',{day:'numeric',month:'long'})+(dt===today()?' (bugün)':'');
+  $('#tabs').innerHTML=ORDER.map(d=>{const k=weekDate(d),y=S.done[k],c=y?(y.s==='done'?'ok':'no'):'';
+    return `<button data-d="${d}" class="${d===day?'on ':''}${c}">${DN[d]}<small>${y?(y.s==='done'?'✓':'✗'):(k===today()?'•':'')}</small></button>`}).join('');
+  $('#wt').value=D.title;
+  $('#st').innerHTML=(D.title||D.ids.length)?`<div class="stb"><button data-a="done" class="${x&&x.s==='done'?'on':''}">✓ Antrenmanı yaptım</button><button data-a="skip" class="${x&&x.s==='skip'?'off':''}">✗ Yapmadım</button></div>`:'';
+  $('#list').innerHTML=D.ids.length?D.ids.map(id=>{
+    const L=last(id),a=sets(id);
+    const lt=L?`Son (${new Date(L.d+'T12:00').toLocaleDateString('tr-TR',{day:'numeric',month:'short'})}): ${L.b.k} kg × ${L.b.r} tekrar, ${L.n} set`:'İlk kez, henüz kayıt yok';
+    return `<div class="card" data-id="${id}">
+      <div class="ch"><b>${esc(S.names[id]||'Hareket')}</b><button class="x" data-a="del" aria-label="Hareketi sil">✕</button></div>
+      <div class="last">${lt}</div>
+      <div class="cap"><span>Set</span><span>Kg</span><span>Tekrar</span><span></span></div>
+      ${a.map((s,i)=>rowH(s,i,L)).join('')}
+      <div class="ft"><span>Hacim <b class="v"></b></span><span>1RM <b class="m"></b></span><button class="as" data-a="as">+ Set</button></div>
+    </div>`}).join(''):'<div class="sub" style="text-align:center;padding:22px">Bu gün için hareket yok. Üstten antrenman adı yaz, aşağıdan hareket ekle.</div>';
+  upd();
+}
+function upd(){let T=0;
+  document.querySelectorAll('.card').forEach(c=>{const a=sets(c.dataset.id),v=vol(a),m=rm(a);T+=v;
+    c.querySelector('.v').textContent=f1(v)+' kg';c.querySelector('.m').textContent=m?f1(m)+' kg':'–'});
+  $('#total').textContent=f1(T)+' kg'}
+
+/* Geçmiş: son 5 hafta */
+function hist(){const n=new Date(),rows=[];let pl=0,dn=0;
+  for(let i=0;i<35;i++){
+    const dt=new Date(n.getFullYear(),n.getMonth(),n.getDate()-i),k=fmtD(dt),w=dt.getDay(),x=S.done[k];
+    if(k<S.since&&!x)continue;
+    const title=x?x.t:S.days[w].title;if(!title)continue;
+    const st=x?x.s:(i===0?'wait':'miss');
+    if(st!=='wait'){pl++;if(st==='done')dn++}
+    let v=0;for(const id in (S.logs[k]||{}))v+=vol(S.logs[k][id]);
+    const lb={done:'Yapıldı',skip:'Yapılmadı',miss:'İşaretlenmedi',wait:'Bugün'}[st];
+    rows.push(`<div class="hr"><div><b>${DF[w]}</b><span class="d">${dt.toLocaleDateString('tr-TR',{day:'numeric',month:'short'})}</span>
+      <div class="ht">${esc(title)}${v?', '+f1(v)+' kg hacim':''}</div></div><span class="bd ${st}">${lb}</span></div>`)}
+  $('#hs').textContent=pl?`Son 5 hafta: ${pl} planlı antrenmanın ${dn} tanesi yapıldı`:'Henüz kayıt yok';
+  $('#hl').innerHTML=rows.join('')||'<div class="sub" style="text-align:center;padding:22px">Antrenman gününü işaretledikçe burada listelenir.</div>'}
+
+/* Olaylar */
+document.querySelector('.seg').onclick=e=>{const b=e.target.closest('button');if(b){view=b.dataset.v;render()}};
+$('#tabs').onclick=e=>{const b=e.target.closest('button');if(b){day=+b.dataset.d;render()}};
+$('#wt').oninput=e=>{S.days[day].title=e.target.value;save()};
+$('#wt').onchange=render;
+$('#st').onclick=e=>{const b=e.target.closest('[data-a]');if(!b)return;
+  const s=b.dataset.a,dt=vd(),x=S.done[dt];
+  if(x&&x.s===s)delete S.done[dt];else S.done[dt]={s,k:day,t:S.days[day].title||DF[day]};
+  save();render()};
+$('#list').addEventListener('input',e=>{const i=e.target;if(!i.dataset.f)return;
+  sets(i.closest('.card').dataset.id)[+i.dataset.i][i.dataset.f]=i.value.replace(',','.');save();upd()});
+$('#list').addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b)return;
+  const id=b.closest('.card').dataset.id,a=b.dataset.a;
+  if(a==='as'){const s=sets(id),p=s[s.length-1];s.push({k:p.k,r:p.r})}
+  else if(a==='rs'){const s=sets(id);if(s.length>1)s.splice(+b.dataset.i,1)}
+  else if(a==='del'){if(!confirm('“'+S.names[id]+'” bu günün programından silinsin mi? Geçmiş kayıtların korunur.'))return;
+    S.days[day].ids=S.days[day].ids.filter(x=>x!==id)}
+  save();render()});
+$('#addf').addEventListener('submit',e=>{e.preventDefault();
+  const n=$('#newEx').value.trim();if(!n)return;
+  const id=uid();S.names[id]=n;S.days[day].ids.push(id);$('#newEx').value='';save();render()});
+
+/* Dinlenme sayacı */
+let end=0,iv=null,ac;
+const fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+function beep(){try{[0,.4,.8].forEach(t=>{const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime+t;
+  o.frequency.value=880;o.connect(g);g.connect(ac.destination);
+  g.gain.setValueAtTime(.35,n);g.gain.exponentialRampToValueAtTime(.001,n+.3);o.start(n);o.stop(n+.3)})}catch(e){}}
+function stop(){clearInterval(iv);iv=null;document.querySelectorAll('.ti [data-s]').forEach(b=>b.classList.remove('on'))}
+function tick(){const l=Math.ceil((end-Date.now())/1000);
+  if(l<=0){stop();$('#tm').textContent='00:00';const bar=$('#tbar');bar.classList.add('done');
+    beep();if(navigator.vibrate)navigator.vibrate([400,150,400,150,400]);
+    setTimeout(()=>bar.classList.remove('done'),3000);return}
+  $('#tm').textContent=fmt(l)}
+document.querySelectorAll('.ti [data-s]').forEach(b=>b.onclick=()=>{
+  try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}
+  stop();b.classList.add('on');end=Date.now()+b.dataset.s*1000;tick();iv=setInterval(tick,250)});
+$('#stop').onclick=()=>{stop();$('#tm').textContent='00:00'};
+document.addEventListener('visibilitychange',()=>{if(iv)tick()});
+
+/* Yedekleme */
+function dl(name,text,type){const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+function clean(){const logs={};
+  for(const d in S.logs){const o={};for(const id in S.logs[d]){const v=S.logs[d][id].filter(valid);if(v.length)o[id]=v}
+    if(Object.keys(o).length)logs[d]=o}
+  return{app:'spor-takip',v:2,days:S.days,names:S.names,logs,done:S.done,since:S.since}}
+const f1c=n=>String(Math.round(n*10)/10);
+$('#ej').onclick=()=>dl('spor-yedek-'+today()+'.json',JSON.stringify(clean(),null,2),'application/json');
+$('#ec').onclick=()=>{const q=s=>'"'+String(s).replace(/"/g,'""')+'"';
+  const rows=['Tarih,Gün,Antrenman,Durum,Hareket,Set,Kg,Tekrar,Hacim,1RM'],c=clean();
+  const dates=[...new Set([...Object.keys(c.logs),...Object.keys(c.done)])].sort();
+  dates.forEach(d=>{const w=new Date(d+'T12:00').getDay(),x=c.done[d],t=x?x.t:c.days[w].title,
+    st=x?(x.s==='done'?'Yapıldı':'Yapılmadı'):'';
+    const L=c.logs[d]||{},ids=Object.keys(L);
+    if(!ids.length)rows.push([d,DF[w],q(t),st,'','','','','',''].join(','));
+    ids.forEach(id=>L[id].forEach((s,i)=>rows.push([d,DF[w],q(t),st,q(S.names[id]||id),i+1,s.k,s.r,f1c(s.k*s.r),f1c(+s.r===1?+s.k:s.k*(1+s.r/30))].join(','))))});
+  dl('spor-yedek-'+today()+'.csv','\ufeff'+rows.join('\n'),'text/csv;charset=utf-8')};
+$('#imp').onchange=async e=>{const f=e.target.files[0];if(!f)return;
+  try{const d=mig(JSON.parse(await f.text()));if(!d)throw 0;
+    if(!confirm('Mevcut veriler yedekteki verilerle değiştirilsin mi?'))return;
+    S=d;save();render();toast('Yedek yüklendi')}
+  catch(x){toast('Geçersiz yedek dosyası')}
+  e.target.value=''};
+
+save();render();
+</script>
+</body>
+</html>
